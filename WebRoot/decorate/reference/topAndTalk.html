@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<sitemesh:write property='head' />
+<title><sitemesh:write property='title' /></title>
+<script type="text/javascript">
+	window._userInfo = {
+		points : "${user.attr.points}"
+	}
+	$(function() {
+		window._initDict(["userLevel"]);
+		var $pathname = window.location.pathname;
+		var $hd = document.getElementById('navlist');
+
+		//导航样式切换
+		$('.p_h_nav_item a,.p_h_n_li a').each(function(index) {
+			if ($(this).attr('href').toLowerCase() == $pathname.toLowerCase()) {
+				$(this).parent("li").addClass('on');
+			}
+		});
+
+		//body背景
+		if ($pathname.indexOf('index.jsp') > 0 || $pathname.indexOf('.jspx') < 0) {
+			$($hd).parents('body')[0].className = 'index_bg';
+			$('.p_h_nav_item').eq(0).addClass('on');
+			$('.page_ft_ct').css({
+				'color' : '#333',
+				'background' : '#fff'
+			});
+		} else if ($pathname.indexOf('study_online.jspx') > 0 || $pathname.indexOf('choose_level.jspx') > 0 || $pathname.indexOf('exercise.jspx') > 0) {
+			$($hd).parents('body')[0].className = 'study_bg';
+			$('.p_h_nav_item').eq(1).addClass('on');
+		} else if ($pathname.indexOf('live.jspx') > 0 || $pathname.indexOf('live_detail.jspx') > 0 || $pathname.indexOf('record_detail.jspx') > 0 || $pathname.indexOf('standard_work.jspx') > 0 || $pathname.indexOf('live_detail.jspx') > 0 || $pathname.indexOf('standard_detail.jspx') > 0) {
+			$($hd).parents('body')[0].className = 'live_bg';
+		} else if ($pathname.indexOf('record_detail.jspx') > 0) {
+			$('.p_h_nav_item').eq(4).addClass('on');
+			$($hd).parents('body')[0].className = 'zj_bg';
+		} else if ($pathname.indexOf('exam.jspx') > 0) {
+			$('.p_h_nav_item').eq(6).addClass('on');
+			$($hd).parents('body')[0].className = 'zj_bg';
+		} else if ($pathname.indexOf('paper_alter.jspx') > 0 || $pathname.indexOf('paper_view.jspx') > 0) {
+			$('.p_h_n_li').eq(3).addClass('on');
+			$($hd).parents('body')[0].className = 'zj_bg';
+		} else {
+			$($hd).parents('body')[0].className = 'zj_bg';
+		}
+
+		//页面头部查看更多导航 
+		var $h = $(window).height(), $w = $(window).width();
+		if ($('.page_hd_nav_hide').height() > $h * 0.5) {
+			$('.page_hd_nav_hide').css({
+				'overflow-y' : 'auto'
+			});
+		}
+		$('.page_hd_nav_hide li').click(function() {
+			$(this).addClass('on').siblings('li').removeClass('on');
+			$('.page_hd_nav_hide').slideToggle('1000');
+			$('.page_nav_more').removeClass('on');
+		});
+		getLevel();
+	});
+	function logout() {
+		var url = "${base}/logout.jspx";
+		$.ajax({
+			url : url,
+			success : function(data) {
+				window.location.href = "${base}/user/login.jspx";
+			}
+		});
+	};
+
+	function getLevel() {
+		var levels = window._dictEntitys["userLevel"];
+		for ( var key in levels) {
+			if (window._userInfo.points - key<0) {
+				$("#userLevel").text(levels[key]);
+				break;
+			}
+		}
+	};
+</script>
+</head>
+<body>
+	<div class="page_hd">
+		<div class="clearfix">
+			<img src="${base}/weitu/images/page_logo.png" alt="" class="page_logo fl">
+			<div class="page_hd_nav fl">
+				<!--主要导航项展示-->
+				<div class="page_hd_nav_show clearfix bxs_bb">
+					<#include "/WEB-INF/t/cms/www/default/weitu/template/menu.html" />
+		   		 	<#assign menu_length = its?size/>
+					<ul class="fl clearfix" id="navlist" style='max-width: 96%;'>
+						 <li class="p_h_nav_item">
+							<a href="${base}/user/index.jspx">首页</a>
+						</li> 
+						<#list menu_perm as item>
+							<@cms_perm url = item>
+								<li class="p_h_nav_item">
+						            <a href="${base}${menu_urls[item_index]}" >${menu_zh[item_index]}</a>
+						        </li>
+						    </@cms_perm>
+						</#list>
+					</ul>
+					<span class="page_nav_more fl" onclick="$(this).toggleClass('on');$('#navlist').toggleClass('on');" style='display: none;'></span>
+				</div>
+			</div>
+			<div class="fr page_hd_statu">
+				<a style='color: #666;'>您好,${(user.attr.realname!user.username)!} </a>
+				/
+				<a href="javascript:;" style="cursor: default; color: #666;" class="p_h_s_level">
+					级别：
+					<span id="userLevel" style="color: #f7ac1d;"></span>
+				</a>
+				/
+				<a href="${base}/user/score_history.jspx" class="p_h_s_jifen" style="color: #666;">
+					积分：
+					<span name="integral">
+						<script id="userPoints" src="${base}/weitu/js/interfacejs/writePoints.js"></script>
+					</span>
+				</a>
+				<!--登录成功显示-->
+				/
+				<a href="${base}/user/per_info.jspx" class="p_h_s_center">个人中心</a>
+				/
+				<a href="javascript:;" onclick="logout();return false;" class="p_h_s_exit">退出</a>
+			</div>
+		</div>
+	</div>
+	</div>
+	<sitemesh:write property='body' />
+	<a href="${base}/user/online_chat.jspx" class="fix page_csr b_rs_l_10" target="_chatWindow">
+		<div class="img_wrap">
+			<img src="${base}/weitu/images/index/csr.png" alt="" class="j_csr">
+		</div>
+		<p class="csr_tip">在线聊天</p>
+	</a>
+	<div class="page_ft">
+		<p class="page_ft_ct">国网鄂州供电公司营销部</p>
+	</div>
+	<script>
+		$(function() {
+			//是否出现展开按钮
+			var sum_length = 0;
+			$('.p_h_nav_item').each(function(index) {
+				sum_length = sum_length + $(this).width();
+				if (sum_length > 600) {
+					$('.page_nav_more').show();
+				} else {
+					$('.page_nav_more').hide();
+				}
+			});
+
+			//客服缩放
+			function csr() {
+				//缩放
+				/* $('.j_csr').animate({
+					'width' : '34px'
+				}, 300, 'linear').animate({
+					'width' : '-=18px'
+				}, 300, 'linear', function() {
+					csr();
+				}); */
+				$('.j_csr').css('width','32px');
+			}
+			csr();
+		});
+	</script>
+</body>
+</html>

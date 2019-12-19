@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd"  >
+
+    <!-- 内网数据源 -->
+    <bean id="dataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean">
+        <property name="uniqueResourceName" value="source_inner" />
+        <property name="xaDataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="url">${jdbc.url}</prop>
+                <prop key="user">${jdbc.username}</prop>
+                <prop key="password">${jdbc.password}</prop>
+            </props>
+        </property>
+        <property name="minPoolSize" value="${cpool.minPoolSize}" />
+        <property name="maxPoolSize" value="${cpool.maxPoolSize}" />
+        <property name="borrowConnectionTimeout" value="${cpool.checkoutTimeout}" />
+        <property name="testQuery" value="select 1" />
+        <property name="maintenanceInterval" value="60" />
+    </bean>  
+    <!-- 外网数据源 -->
+    <bean id="dataSource_ext" class="com.atomikos.jdbc.AtomikosDataSourceBean">
+        <property name="uniqueResourceName" value="source_ext" />
+        <property name="xaDataSourceClassName" value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"/>
+        <property name="xaProperties">
+            <props>
+                <prop key="url">${jdbc_ext.url}</prop>
+                <prop key="user">${jdbc_ext.username}</prop>
+                <prop key="password">${jdbc_ext.password}</prop>
+            </props>
+        </property>
+        <property name="minPoolSize" value="${cpool_ext.minPoolSize}" />
+        <property name="maxPoolSize" value="${cpool_ext.maxPoolSize}" />
+        <property name="borrowConnectionTimeout" value="${cpool_ext.checkoutTimeout}" />
+        <property name="testQuery" value="select 1" />
+        <property name="maintenanceInterval" value="60" />
+    </bean> 
+    
+    
+     <!-- 支持 @Transactional 标记 start -->
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager" init-method="init" destroy-method="close">
+        <property name="forceShutdown" value="true"/>
+    </bean>
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="300"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="atomikosTransactionManager"/>
+        <property name="userTransaction" ref="atomikosUserTransaction"/>
+    </bean>
+    <tx:annotation-driven/> 
+    <!-- 支持 @Transactional 标记 end -->
+    
+    
+    
+    <!-- 开发环境 -->
+    <beans profile="development">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:config/jdbc_dev_double.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+    <!-- 生产环境 -->
+    <beans profile="production">
+        <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations">
+                <list>
+                    <value>classpath:config/jdbc_prod_double.properties</value>
+                </list>
+            </property>
+        </bean>
+    </beans>
+    
+    
+</beans>

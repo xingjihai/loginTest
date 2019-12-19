@@ -1,0 +1,27 @@
+JAVA中获取项目文件路径  :
+http://blog.163.com/michaelgaoit@126/blog/static/11389538620103711613620/
+java中如何获取项目各个目录下的文件
+http://blog.csdn.net/xuweilinjijis/article/details/8691442
+java项目获取文件路径总结：
+http://blog.csdn.net/dudefu011/article/details/50955928
+
+一、磁盘中的分割符：
+
+    System.getProperty("java.io.tmpdir")     --不同系统上的磁盘缓存路径
+    System.getProperty("file.separator")     --路径分隔符
+
+    其他：
+                                    dataType         window                 unix
+    File.separator                  String           '/'                    '\'
+    File.separatorChar              char             '/'                    '\'
+    File.pathSeparator              String           ';'                    ':'       此字符用于分隔以路径列表 形式给定的文件序列中的文件名
+    File.pathSeparatorChar          char             ';'                    ':'       此字符用于分隔以路径列表 形式给定的文件序列中的文件名
+    
+    
+二、java项目中获取到项目路径（不包含根）
+String relativelyPath=System.getProperty("user.dir");
+输出结果：E:\3-developdir\workspace_sts\FaceRecognition
+    
+二、使用：
+    上传文件到磁盘路径：
+    PathTool.getContextDiskPath(request, "/upload")+File.separator+ image_file.getOriginalFilename()

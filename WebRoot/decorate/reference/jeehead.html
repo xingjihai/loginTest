@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><sitemesh:write property='title' /></title> <#include "../jeecms_sys/head.html"/>
+<script>
+	$(function() {
+		$("textarea").each(function() {
+			var thisTextarea = this;
+			thisTextarea.id = "baidueditor" + (Math.random() + "").substring(2);
+			var this_id = thisTextarea.id;
+			UE.getEditor(thisTextarea.id, {
+				wordCount : true,
+				elementPathEnabled : false,
+				initialFrameHeight : 300,
+				initialFrameWidth : 560,
+			}).addListener('ready', function() {
+				if (thisTextarea.readOnly) {
+					this.setDisabled();
+				}
+				$("#"+this_id).find("*").each(function(){
+					if(this.style.zIndex){
+						this.style.zIndex="";
+					}
+				});
+			});
+		});
+	});
+</script>
+<sitemesh:write property='head' />
+</head>
+<body>
+	<sitemesh:write property='body' />
+</body>
+</html>

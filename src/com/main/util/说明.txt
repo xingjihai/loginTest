@@ -1,0 +1,2 @@
+参数接收工具类 简化参数的接收和改动。
+实例可参考12348_bkman CaseDaoImpl类的 getPageBySql方法

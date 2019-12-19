@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	
+	<display-name>loginTest</display-name>
+    <welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>
+	<!-- 配置文件 -->
+	<context-param>
+	   <param-name>contextConfigLocation</param-name>
+	   <param-value>
+	       classpath:config/database_config.xml
+	       classpath:config/db_type_config.xml
+<!-- 	       classpath:config/database_config_double.xml -->
+<!-- 	       classpath:config/db_type_config_double.xml -->
+	       classpath:config/shiro_context.xml
+	       classpath:config/freemarker_config.xml
+	       <!-- jsp_config 待做TODO -->
+<!-- 	       classpath:config/jsp_config.xml --> 
+<!-- 	       classpath:config/viewpath_config.xml -->
+	       classpath:config/quartz_task.xml
+	       classpath:config/spring_ehcache.xml
+	       classpath:config/captcha-context.xml
+	   </param-value>
+	</context-param>
+	
+	<listener>
+	   <description>在启动Web容器时，自动装配spring applicationContext.xml的配置信息</description>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+     </listener>
+
+<!-- 	<listener> -->
+<!-- 	   <description>防止spring内存溢出监听器</description> -->
+<!-- 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class> -->
+<!-- 	</listener> -->
+  
+	<context-param>
+        <param-name>spring.profiles.default</param-name>
+         <!-- 正式环境 -->
+<!--        <param-value>production</param-value> -->
+        <!-- 开发环境 -->
+        <param-value>development</param-value>  
+    </context-param>
+  
+  
+    <servlet>  
+        <servlet-name>dispatcherServlet</servlet-name>  
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>  
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath:config/application_context.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>  
+    </servlet>  
+    <servlet-mapping>  
+        <servlet-name>dispatcherServlet</servlet-name>  
+        <url-pattern>*.do</url-pattern>  
+    </servlet-mapping>  
+    
+    <!-- 图片验证码生成servlet -->
+    <servlet>
+        <description> 图片验证码生成servlet </description>
+        <servlet-name>Jcaptcha</servlet-name>
+        <servlet-class>com.captcha.JcaptchaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jcaptcha</servlet-name>
+        <url-pattern>/captcha.svl</url-pattern>
+    </servlet-mapping>
+    
+    
+    
+    <!-- session 配置 -->
+    <session-config>
+        <session-timeout>1</session-timeout>
+    </session-config>
+    
+    
+    <filter>
+        <filter-name>processTime</filter-name>
+        <filter-class>com.context.ProcessTimeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>processTime</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+
+	<filter>
+		<description>字符集过滤器</description>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<description>字符集编码</description>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+    <filter>
+        <description>防止Xss注入,待完善</description>
+        <filter-name>XssFilter</filter-name>
+        <filter-class>com.xss.util.XssFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>XssFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <filter>
+        <description>shiro 权限拦截 对应后面的shiro过滤器,名称不能改</description>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+
+	<filter>
+	    <description>用于网页的布局和修饰</description>
+		<filter-name>sitemesh</filter-name>
+		<filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	
+	<!--     UrlReWriterFilter start -->
+    <filter>
+        <description>UrlReWriterFilter修改url在forward出去,这时其他过滤器需要配置dispatcher标签才能继续过滤,或者直接放在最后</description>
+        <filter-name>UrlReWriterFilter</filter-name>
+        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+        <init-param>
+            <param-name>confReloadCheckInterval</param-name>
+            <param-value>30</param-value>
+        </init-param>
+        <init-param>
+            <param-name>statusPath</param-name>
+            <param-value>/status</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>UrlReWriterFilter</filter-name>
+        <description>这里是选择过滤掉全部的Url</description>
+        <url-pattern>/*</url-pattern>
+        <description>主要说明该拦截器拦截的请求包括客户端的请求和从服务器端forward的请求</description>
+        <dispatcher>REQUEST</dispatcher>
+<!--         <dispatcher>FORWARD</dispatcher> -->
+    </filter-mapping>
+<!--     UrlReWriterFilter end -->
+	
+	
+	
+</web-app>

@@ -1,0 +1,10 @@
+一、页面获取路径
+    参考： https://segmentfault.com/a/1190000002967105
+    
+
+配置：
+    /loginTest/src/config/freemarker_config.xml
+
+定义项目的全局路径：
+    可以自定义FreeMarkerViewResolver的viewClass属性为com.freemarker.util.MyFreeMarkerView,覆盖父类的exposeHelpers方法。
+    

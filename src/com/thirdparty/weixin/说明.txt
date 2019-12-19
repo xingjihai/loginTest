@@ -1,0 +1,67 @@
+一、自定义菜单：
+二、服务器配置和消息接收入口： ReceiveEventAct
+    
+    
+    只需更改special包中的内容
+    
+    
+三、调用客服接口回复消息：
+    customserviceSvc.send_text(text_msg);
+     
+    
+四、消息的回复有两种：
+    1、被动回复（即接收到消息后 直接返回xml格式数据包） 格式如：ReplyMessage.text_message(***)
+    2、主动回复（调用客服接口发送消息 --此时接收到消息可以直接返回success ）
+    
+    
+五、将用户消息发送给客服，两种方式：
+    1、在某种情况下,一直将用户的当次消息转发给客服（通过修改返回的xml数据包），这时客户还是在待接入中，客服登录后可以看到所有待回复的消息
+        客服点击接入后将创建会话，直接客户的消息将不会通过后台
+        
+        //直接交给客服
+        InputMessage im=new InputMessage();
+        im.setToUserName(inputMessage.getFromUserName());
+        im.setFromUserName(WeixinConfig.WEIXIN_NO);
+        im.setCreateTime(inputMessage.getCreateTime());
+        im.setMsgType("transfer_customer_service");
+        String msg=XmlHandle.getXmlString(im);
+        return msg;
+        即构造如下格式：
+        <xml>
+         <ToUserName><![CDATA[touser]]></ToUserName>
+         <FromUserName><![CDATA[fromuser]]></FromUserName>
+         <CreateTime>1399197672</CreateTime>
+         <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+        </xml>
+        
+    2、直接在客户和客服直接创建会话（缺点：直接分配，需要考虑到分配规则。）
+    
+六、JS_SDK调用配置：
+    WxJsAPI wxJsAPI=JSSDKConfigSvc.signJstick(url)   //url可以用request.getRequestURL() 获取
+    
+    页面上：
+    
+    <#if wxJsAPI??>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js" ></script> 
+    <script>
+    wx.error(function(res){
+        console.log("wx err",res)
+    });
+    wx.ready(function(){
+        //微信接口调用,如：
+        wx.onMenuShareAppMessage(wxShareParam)
+        wx.onMenuShareTimeline(wxShareParam);
+    });
+    wx.config({
+        debug: false,   
+        appId: '${wxJsAPI.appId}',      
+        timestamp: ${wxJsAPI.timestamp},    
+        nonceStr: '${wxJsAPI.nonceStr}',    
+        signature: '${wxJsAPI.signature}',  
+        jsApiList: ["onMenuShareAppMessage","onMenuShareTimeline"]
+    });
+    </script>
+    <#else>
+    <!--widgets.xml 未引入 weixinJsWidget -->
+    </#if>
+    

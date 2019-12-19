@@ -1,0 +1,40 @@
+beetlsql 文档地址：http://ibeetl.com/guide/#beetlsql
+
+1、导入包
+beetl-2.7.21.jar
+beetlsql-2.8.26.jar
+
+
+一、 基本使用
+    1、示例：  loginTest/src/com/beetlsql/test/MainClass.java
+
+    
+    
+二、与spring集成
+    参考： http://ibeetl.com/guide/#beetlsql     24.1. Spring集成和Demo
+    
+    1、配置文件： database_config.xml(数据源和spring事务配置)  db_type_config.xml(查询方式)
+        注意点：dbStyle 风格 和 模板路径配置sqlLoader ,NameConversion(nc)
+        （1）NameConversion 有 DefaultNameConversion默认-类与数据库命名一致， 和UnderlinedNameConversion 下划线风格（数据库下划线对应java类的大写），最好用默认的，这样才能避免命名不一致问题。
+    2、在service层中注入 @Resource  SQLManager sqlManager ;
+    3、使用sqlManager 操作数据库，语法见 beetlsql文档
+    示例： com/beetlsql/manager/JdbcTestMngImpl.java
+    
+
+
+三、语法说明
+    示例： com/beetlsql/manager/JdbcTestMngImpl.java
+    
+    1、以对象为条件的查询，对等查询
+    sqlManager.template(Object)
+    
+    
+    
+    
+    
+    
+四、与jdbcTemple对比：
+    缺点：
+    1、无法获取插入的id
+    优点：
+    1、自定义select 查询更为直观，关联查询更方便。

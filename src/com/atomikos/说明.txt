@@ -1,0 +1,26 @@
+多数据源配置： http://www.cnblogs.com/ityouknow/p/4977136.html
+
+导包：
+    atomikos-util-3.9.3.jar
+    transactions-3.9.3.jar
+    transactions-api-3.9.3.jar
+    transactions-jdbc-3.9.3.jar
+    transactions-jta-3.9.3.jar
+    jta-1.1.jar
+
+一、配置文件：
+    /loginTest/src/config/database_config_double.xml
+    /loginTest/src/config/db_type_config_double.xml
+    数据源配置：
+    /loginTest/src/config/jdbc_dev_double.properties
+    /loginTest/src/config/jdbc_prod_double.properties
+
+    类：
+    /loginTest/src/com/atomikos/BaseSupport_ext.java
+    
+    
+二、说明：
+    1、database_config_double.xml  中使用atomikos 进行双数据源的配置和分布式事务的设置。
+    2、db_type_config_double.xml 中 根据数据源配置多个 数据库操作接口的实现（以MysqlDaoSupport为例）
+    3、BaseSupport_ext.java 中设置daoSupport 属性。
+    4、具体service层中(如JdbcTestMngImpl_ext)继承对应的数据库操作接口 即可实现对不同数据源的操作。

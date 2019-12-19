@@ -1,0 +1,28 @@
+
+
+
+相关配置和类：
+    properties  （settings中的方法  ）
+    SpringContextHolder （settings中的方法  ）
+    settings.java （FileUploadTool.springFileUpload方法）
+    
+
+spring中的配置：
+	1、导入包：
+	commons-fileupload-1.3.2.jar
+	transferTo方法： commons-io-2.5.jar
+	
+	2、
+	<!-- 启用文件上传支持 -->
+	<bean id="multipartResolver"
+	        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	        <property name="maxUploadSize" value="10000000" />  <!-- 10M -->
+	        <property name="maxInMemorySize" value="1024000" />
+	    </bean>
+
+	3、
+	form必须：
+ 	enctype="multipart/form-data" method="post"
+
+一、应用：
+    1、springMVC项目中上传文件

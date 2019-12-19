@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>上传文件</title>
+</head>
+<body>
+    <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    var data={
+        type:1,
+        specialityType:null,                    
+        page : {
+            pageNo:1,
+            length:8
+        }
+    }
+    var person={
+            name:"父亲",
+            sex:44,                    
+            child : {
+            	name:"儿子",
+            	sex:20
+            }
+        }
+    data=JSON.stringify(data);
+    person=JSON.stringify(person);
+    $.ajax({
+    	url:"http://192.168.0.34:8036/loginTest/springmvc/invoke2.do",
+        data:person,
+        dataType:"json",
+        type:"post",
+        contentType: "application/json; charset=utf-8",
+        success:function(){
+        	alert("success");
+        }
+    })
+    </script>
+</body>
+</html>

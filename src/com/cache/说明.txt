@@ -1,0 +1,44 @@
+参考：http://www.cnblogs.com/jingmoxukong/p/5975994.html
+Ehcache基本操作
+Element、Cache、CacheManager是Ehcache最重要的API。
+  ● Element：缓存的元素，它维护着一个键值对。
+  ● Cache：它是Ehcache的核心类，它有多个Element，并被CacheManager管理。它实现了对缓存的逻辑行为。
+  ● CacheManager：Cache的容器对象，并管理着Cache的生命周期。
+
+
+（一）非注解使用
+    
+    一、准备
+        包：ehcache-core-2.6.11.jar
+        工具类：  ICacheUtil 为缓存工具接口 ，EhCacheUtil 为 Ehcache工具类（ehcache实现方式） ,AbstractCacheProxy 抽象缓存代理类
+        配置文件：ehcache.xml （放源文件下，一般为src）
+        
+    二、普通使用：
+        com.cache.controller.CacheAction.ehcacheTest()
+        com.cache.service.MemberMngProxy.java
+        
+        注意点：通过 EhCacheUtil 操作cache每一个线程都是相同的，这是共享的，无需考虑多线程。 （当每个线程都不一样时就不应该放在缓存中）
+        EhCacheUtil cache = new EhCacheUtil("aaa");       --通过cacheManager 得到 相应模块的 cahce（不同模块的配置可以在配置文件中设置,如某一个模块缓存多少秒等。）
+        cache.put("test",list);  --可以将cache看成map,每一个键值对为一个Element
+        cache.get("test");
+        
+    三、数据库缓存
+        示例：  loginTest/src/com/cache/controller/CacheAction.java  cacheProxyTest方法
+    
+    
+（二）spring ehcache 注解整合使用
+    
+    一、准备：
+        1、web.xml引入配置文件：spring_ehcache.xml
+        2、spring_ehcache.xml 中引入 配置 ehcache.xml
+        
+    二、使用：
+        com.cache.controller.CacheAction2.java
+        com.cache.service.MemberMngProxy2.java
+        注意点： MemberMngProxy2 必须在spring上下文中注册（即必须注册为bean） 注解才能有效。
+        
+    三、知识点：
+        @Cacheable     缓存结果和获取缓存结果
+        @CachePut      缓存结果，不获取缓存结果
+        @CacheEvict    删除对应key的缓存结果。
+    

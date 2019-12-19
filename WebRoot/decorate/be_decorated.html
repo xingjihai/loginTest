@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- <meta http-equiv="Cache-Control" content="no-cache" /> -->
+<!-- <meta http-equiv="Pragma" content="no-cache" /> -->
+<!-- <meta http-equiv="Expires" content="0" />  -->
+    <title>被装饰页的title</title>
+    我是被装饰页的head222
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+function aaa(){
+	alert(1)
+}
+<!--setInterval实时显示时间-->
+    function mytime(){
+        var a = new Date();
+        var b = a.toLocaleTimeString();
+        var c = a.toLocaleDateString();
+        document.getElementById("time1").innerHTML = c+"&nbsp"+b;
+        }
+    setInterval(function() {mytime()},1000);
+    $.ajax({
+    	url:"http://192.168.0.34:8036/loginTest/getDate.do",
+    	dataType:"json",
+    	type:"post",
+    	success:function(data){
+    		document.getElementById("time2").innerHTML = data;
+    	}
+    })
+</script>
+</head>
+<body>
+<p id="time1" style="color: blueviolet;"></p>
+<p id="time2" style="color: blueviolet;"></p>
+    我是被装饰页的body部分2
+    <button id="btn" onclick="aaa()">按钮</button>
+    <a href="https://www.baidu.com/">百度</a>  <br>
+    <a href="http://192.168.0.34:8036/loginTest/sitemesh/test.html">刷新</a> <br>
+<!--     <img alt="aaa" src="http://192.168.0.34:8036/loginTest/upload/666/image/80X80.png"> -->
+</body>
+<myTag><script type="text/javascript">console.log("自定义标签部分")</script></myTag>
+</html>

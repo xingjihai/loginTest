@@ -1,0 +1,20 @@
+
+步骤1： 设置拦截器  --注意与下面的MobileLoginInterceptor类路径对应
+    <bean id="mobileLoginInterceptor" class="com.keeplogin.MobileLoginInterceptor"/>
+    <mvc:interceptors>
+       <mvc:interceptor  >
+           <mvc:mapping path="/mobile/**"/>   
+           <ref bean="mobileLoginInterceptor"/>
+       </mvc:interceptor>
+    </mvc:interceptors>
+
+步骤2： 拦截器代码
+    解压后导入：
+    [附件:keeplogin.rar]
+步骤3：在service层实现相应的逻辑
+    使用token登录
+    使用账号密码登录
+    登录后的处理
+步骤4：
+    重写MobileLoginInterceptor类（继承MobileLoginInterceptorAbstract并实现抽象方法）
+    --调用service层中相应的方法。

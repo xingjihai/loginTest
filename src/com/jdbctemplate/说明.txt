@@ -1,0 +1,22 @@
+
+一、准备
+    1、导入相关包
+    2、配置文件： database_config.xml(数据源和spring事务配置)  db_type_config.xml(查询方式)
+    3、com.jdbctemplate.util 包下为基本类
+        IDaoSupport 为接口  MysqlDaoSupport为基本实现 ， 其他数据库的实现待拓展
+        BaseSupport  ---service层的基类
+        
+二、使用
+    1、service层 继承BaseSupport          示例： com/jdbctemplate/manager/JdbcTestMngImpl.java
+    
+    
+    
+    2、其他：
+    批量插入： jdbcTemplate.batchUpdate(sql, batchArgs);
+    
+    
+    3、语法参考：
+    http://www.cnblogs.com/caoyc/p/5630622.html
+    http://www.cnblogs.com/wanggd/p/3140506.html
+    https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
+    

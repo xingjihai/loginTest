@@ -1,0 +1,25 @@
+
+
+导入包：
+jcaptcha-1.0.jar
+captcha-context.xml
+
+
+一、配置：
+    1、在web.xml中引入配置文件：
+        captcha-context.xml
+    2、web.xml中设置servlet
+        <servlet>
+            <description> 图片验证码生成servlet </description>
+            <servlet-name>Jcaptcha</servlet-name>
+            <servlet-class>com.captcha.JcaptchaServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>Jcaptcha</servlet-name>
+            <url-pattern>/captcha.svl</url-pattern>
+        </servlet-mapping>
+    3、JcaptchaServlet类
+    4、验证: (captcha为前端上传的图片验证码)
+        if (imageCaptchaService.validateResponseForID(request.getSession().getId(), captcha)) {
+            return "Captcha true";
+        }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><sitemesh:write property='title' /></title>
+<!-- js_lib:begin-->
+<script src="${base}/js_lib/jquery/jquery-1.12.4.js"></script>
+<!-- 不同的ui.css需要到官网下载对应的images包！！！！ :begin-->
+<link rel="stylesheet" href="${base}/js_lib/jquery_ui/css/base.css" />
+<!-- 不同的ui.css需要到官网下载对应的images包！！！！ :end-->
+<script src="${base}/js_lib/jquery_ui/jquery-ui.js"></script>
+<script src="${base}/js_lib/centerLoader/js/center-loader.min.js"></script>
+<script src="${base}/r/cms/jquery.js"></script>
+<script src="${base}/js_lib/jquery_plugin/jquery.serializejson.min.js"></script>
+<!-- Mobiscroll JS and CSS Includes -->
+<link href="${base}/js_lib/mobiscroll/css/mobiscroll.custom-3.0.0-beta6.min.css" rel="stylesheet" type="text/css" />
+<script src="${base}/js_lib/mobiscroll/js/mobiscroll.custom-3.0.0-beta6.min.js"></script>
+<!-- weitu -->
+<script type="text/javascript" src="${base}/weitu/js/index.js"></script>
+<link rel="stylesheet" href="${base}/weitu/css/reset.css" />
+<link rel="stylesheet" href="${base}/weitu/css/index.css" />
+<!-- js_lib:end-->
+<!-- js_native:begin -->
+<script src="${base}/js_lib/head.js"></script>
+<script>
+	window._userInfo = $.extend(window._userInfo || {}, {
+		id : "${(user.id)!}"
+	});
+</script>
+<!-- js_native:end -->
+<sitemesh:write property='head' />
+</head>
+<body>
+	<sitemesh:write property='body' />
+</body>
+</html>

@@ -1,0 +1,13 @@
+<html>
+${hello}</br>
+
+<#if user??>
+姓名:${user.username!}
+密码:${user.password!}
+</#if>
+<br/>
+number: ${number?number}<br/>
+number: ${number?string("0.#")} <br/>
+datetime: ${date?datetime}<br/>
+datetime: ${date?string("yyyy-MM-dd HH:mm:ss zzzz")} <br/>
+</html> 

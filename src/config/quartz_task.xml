@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd" >
+    
+    <!-- 3、配置作业类 -->
+    <bean id="taskClass" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.timertask.TaskClass" />    <!-- 指定任务类 -->
+        </property>
+        <property name="targetMethod" value="excute" />        <!-- 指定运行的方法 -->
+        <property name="concurrent" value="false" />   <!-- 作业不并发调度  -->
+    </bean>
+ 
+    <!-- 2、触发器 -->
+    <bean id="taskTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="taskClass" />
+        <property name="startDelay" value="0" /><!-- 调度工厂实例化后，经过0秒开始执行调度   -->
+        <property name="cronExpression" value="0 0/1 * * * ?" />
+    </bean>
+    
+    <!-- 1、调度器 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+    <bean name="scheduler" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="taskTrigger" />
+            </list>
+        </property>
+        <property name="taskExecutor" ref="executor" />  <!-- 配置线程池 -->
+    </bean>
+    
+    <bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10" />
+        <property name="maxPoolSize" value="100" />
+        <property name="queueCapacity" value="500" />
+    </bean>
+</beans>

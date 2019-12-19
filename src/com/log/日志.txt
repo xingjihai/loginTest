@@ -1,0 +1,27 @@
+参考：http://yangzb.iteye.com/blog/245844
+
+
+//SLF4J 使用：
+public static final  Logger logger  =  LoggerFactory.getLogger(当前类.class );
+logger.error( " Temperature set to {}. Old temperature was {}. " , 参数1 , 参数2);
+logger.info( " Temperature has risen above 50 degrees. " );
+
+
+记录位置：第一个是控制台，第二个是文件
+
+
+//在不同的风格中切换只需要在部署期切换类库就可以了，和开发时无关。（应移除其他无关包）
+
+//simple log风格要用的包
+slf4j-api-1.4.1.jar  文件
+slf4j-simple-1.4.1.jar
+ 
+
+//jdk14 风格
+slf4j-api-1.4.1.jar 文件
+slj4j-jdk14-1.4.1.jar
+
+//log4j 风格
+slf4j-api-1.4.1.jar 文件
+slf4j-log4j12-1.4.1.jar
+log4j-1.2.x.jar

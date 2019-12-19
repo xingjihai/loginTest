@@ -1,0 +1,44 @@
+参考： http://www.cnblogs.com/luotaoyeah/p/3776879.html
+
+sitemesh3网页布局和修饰的框架
+作用：加入公共部分。 （ sitemesh 是个典型的装饰模式）
+Sitemesh 3 默认只提供了 body，title，head 等 tag 类型，我们可以通过实现 TagRuleBundle 扩展自定义的 tag 规则
+注意：
+1、sitemesh3.xml 配置文件要放在web-inf 目录下！！
+2、decoratror 的路径为 WebContent 下的路径（注意：.html不能被servlet拦截，否则访问不到）
+3、如果被拦截的path 如果输出的为非页面也会被认为是body的一部分，被转换为页面。
+4、304 Not Modified ： 被装饰的页面以公共页面输出，因此只要公共页面没有修改，浏览器都会认为页面没有修改，从而会造成内容过期！！
+    不能与动态页面（freemarker，jsp）联用??否则无法更新动态数据，  只能使用ajax请求，解决办法？？
+    --开发时应该注意！！
+    
+
+一、准备
+    1、导入包：sitemesh-3.0.1.jar
+    2、在web.xml中添加过滤器：
+    <filter>
+        <description>用于网页的布局和修饰</description>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    3、公共部分：
+    如：  /loginTest/WebRoot/decorate/decorator.html
+    4、配置文件：（注意：要放在web-inf 目录下）
+    /loginTest/WebRoot/WEB-INF/sitemesh3.xml
+    其中：
+    <mapping path="/sitemesh/*" decorator="/decorate/decorator.html" />
+    path 表示请求的uri，decorator为（公共页）根目录下的路径
+    
+    
+二、使用
+    1、修改sitemesh3.xml 配置文件中的 路径和公共页面
+    2、被path匹配的路径下的页面将被填充公共部分。
+    
+    
+三、基本原理（个人理解）
+    通过sitemesh过滤器，将匹配path路径的请求所返回的页面，放进相应的公共部分页面中，然后输出公共部分的页面！！
+    （注意：输出的是公共页面，因此公共页面没包含进去的就没有显示了。因此脚本应该被包含或者放在head中）
+    

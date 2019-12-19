@@ -1,0 +1,6 @@
+常量的定义一般有两种：
+    1、直接在类中定义
+        public static final int IS_DEL_YES = 1;
+        public static final int IS_DEL_NO =0;
+    2、通过枚举定义：
+    

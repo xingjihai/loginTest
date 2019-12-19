@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    
+<!-- 自动扫描的包名 -->
+    <context:component-scan base-package="com" />
+    
+<!-- 注解映射的支持 -->
+    <mvc:annotation-driven>
+        <!-- 解决中文乱码问题 -->
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8" />
+            </bean>
+            <!-- json支持 -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+        <!-- 默认的注解映射的支持，如果使用了<mvc:annotation-driven />， 它会自动注册DefaultAnnotationHandlerMapping 与AnnotationMethodHandlerAdapter 这两个bean,所以就没有机会再给它注入interceptors属性，就无法指定拦截器。 -->
+<!--     <mvc:annotation-driven /> -->
+
+
+<!-- 拦截器 -->
+    <mvc:interceptors>
+        <ref bean="FilterDemo"/>
+    </mvc:interceptors>
+    <bean id="FilterDemo" class="com.filterDemo.FilterDemo"/>
+    
+    <!-- 移动端保持登录拦截器 -->
+    <mvc:interceptors>
+       <mvc:interceptor  >
+           <mvc:mapping path="/mobile/**"/>   
+           <ref bean="mobileLoginInterceptor"/>
+       </mvc:interceptor>
+    </mvc:interceptors>
+    <bean id="mobileLoginInterceptor" class="com.keeplogin.MobileLoginInterceptor"/>
+    
+    
+    <!-- 全局获取bean工具类 -->
+    <bean id="springContextHolder" class="com.context.SpringContextHolder" lazy-init="false" scope="singleton"/>
+    
+    
+    <!-- 启用文件上传支持 -->
+    <bean id="multipartResolver"  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10000000" />  <!-- 10M -->
+        <property name="maxInMemorySize" value="1024000" />
+    </bean>
+    
+    
+    <!-- properties支持 -->
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:config/param.properties</value>
+                <value>classpath:config/settings.properties</value>
+            </list>
+        </property>
+        <qualifier value="main"/>
+    </bean>
+    <bean id="propertyUtils" class="com.properties.PropertyUtils">
+        <property name="properties" ref="properties"/>
+    </bean>
+    
+    
+    
+<!--     <context:annotation-config/> -->
+    <!-- AOP式方法级权限检查 shiro支持  -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+    </bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">  <!-- shiro支持  -->
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    
+    
+    
+    </beans>

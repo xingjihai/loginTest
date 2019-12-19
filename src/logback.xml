@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->   
+  <property name="LOG_HOME" value="E:/logs/loginTest" />   
+  
+  <!-- 控制台输出 -->    
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">  
+    <!-- 日志输出编码 -->   
+    <Encoding>UTF-8</Encoding>    
+    <layout class="ch.qos.logback.classic.PatternLayout">    
+       <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->   
+<!--       <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n  caller{?}可以知道在第几行 </pattern>   -->
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{80} - %msg%n%caller{1}</pattern>  
+    </layout>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	<level>ERROR</level>
+	</filter>  
+  </appender> 
+	
+	<!-- 按照每天生成日志文件 -->    
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">    
+    <Encoding>UTF-8</Encoding>    
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+      <!--日志文件输出的文件名-->  
+      <FileNamePattern>${LOG_HOME}/logFile.log.%d{yyyy-MM-dd}.log</FileNamePattern>    
+      <MaxHistory>12</MaxHistory>  <!-- 单位：月 -->
+    </rollingPolicy>    
+    <layout class="ch.qos.logback.classic.PatternLayout">   
+      <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->   
+<!--       <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n  caller{?}可以知道在第几行</pattern>    -->
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{80} - %msg%n%caller{1}</pattern> 
+    </layout>   
+    <!--日志文件最大的大小-->  
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">  
+     <MaxFileSize>10MB</MaxFileSize>  
+    </triggeringPolicy>  
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+    <level>INFO</level>
+    </filter>  
+  </appender>  
+	
+	
+	<!--与root调用的不同：可以指定输出包 additivity为true时表示该包下不被独占（但可能导致重复）,在这里为false时会导致com.log包下的日志输出不到日志文件ref="FILE" -->
+	<!-- 在判断logger.isErrorEnabled()时,logger的日志级别会会覆盖root上的日志级别 -->
+	<logger name="com.log" level="INFO" additivity="true">
+		<appender-ref ref="FILE" />  <!-- FILE为appender标签名:日志文件 -->
+	</logger>
+	<root level="ERROR">
+		<appender-ref ref="STDOUT" />  <!-- STDOUT为appender标签名:控制台 --> 
+	</root>
+</configuration>
+
